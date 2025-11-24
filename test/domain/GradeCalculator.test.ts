@@ -24,6 +24,22 @@ describe('GradeCalculator', () => {
     expect(result.penaltyApplied).toBe(0);
   });
 
+  it('does not apply extra points when policy forbids', () => {
+    const student = new Student('s1', [new Evaluation(15, 100)], true);
+    const agreement = new TeacherAgreement('2025-1', false);
+    const result = calculator.calculate(student, agreement, 2);
+    expect(result.extraPointsApplied).toBe(0);
+    expect(result.finalScore).toBe(15);
+  });
+
+  it('handles no evaluations with attendance', () => {
+    const student = new Student('s1', [], true);
+    const agreement = new TeacherAgreement('2025-1', true);
+    const result = calculator.calculate(student, agreement, 1);
+    expect(result.baseScore).toBe(0);
+    expect(result.finalScore).toBe(1);
+  });
+
   it('caps final score at 20', () => {
     const student = new Student('s1', [new Evaluation(20, 100)], true);
     const agreement = new TeacherAgreement('2025-1', true);
