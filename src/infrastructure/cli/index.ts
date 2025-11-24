@@ -1,6 +1,7 @@
 import { RegisterEvaluations } from '../../application/usecase/RegisterEvaluations';
 import { RegisterAttendance } from '../../application/usecase/RegisterAttendance';
 import { RegisterTeacherAgreement } from '../../application/usecase/RegisterTeacherAgreement';
+import { CalculateFinalGrade } from '../../application/usecase/CalculateFinalGrade';
 import { InMemoryStudentRepository } from '../persistence/InMemoryStudentRepository';
 import { InMemoryPolicyRepository } from '../persistence/InMemoryPolicyRepository';
 import {
@@ -8,10 +9,12 @@ import {
   promptAttendance,
   promptAcademicYear,
   promptEvaluations,
+  promptExtraPoints,
   promptMenu,
   promptYesNo,
   promptStudentId,
 } from './prompts/promptEvaluations';
+import { GradeCalculator } from '../../domain/service/GradeCalculator';
 
 async function handleRegisterEvaluations(
   useCase: RegisterEvaluations,
@@ -37,6 +40,7 @@ async function main() {
   const registerEvaluations = new RegisterEvaluations(repo);
   const registerAttendance = new RegisterAttendance(repo);
   const registerTeacherAgreement = new RegisterTeacherAgreement(policyRepo);
+  const calculateFinalGrade = new CalculateFinalGrade(repo, policyRepo, new GradeCalculator());
 
   try {
     let exit = false;
@@ -66,6 +70,23 @@ async function main() {
             const agree = await promptYesNo('¿Todos los docentes están de acuerdo? (s/n): ');
             await registerTeacherAgreement.execute(academicYear, agree);
             console.log('Acuerdo docente registrado.');
+          } catch (err) {
+            console.error('Error:', (err as Error).message);
+          }
+          break;
+        case 4:
+          try {
+            const studentId = await promptStudentId();
+            const academicYear = await promptAcademicYear();
+            const extra = await promptExtraPoints();
+            const result = await calculateFinalGrade.execute(studentId, academicYear, extra);
+            console.log('\n== Resultado de nota final ==');
+            console.log(`Asistencia mínima: ${result.attendanceOk ? 'Cumple' : 'No cumple'}`);
+            console.log(`Nota base (ponderada): ${result.baseScore.toFixed(2)}`);
+            console.log(
+              `Puntos extra aplicados: ${result.appliedExtraPolicy ? result.extraPointsApplied : 0}`
+            );
+            console.log(`Nota final: ${result.finalScore.toFixed(2)}`);
           } catch (err) {
             console.error('Error:', (err as Error).message);
           }

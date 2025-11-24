@@ -18,6 +18,7 @@ export async function promptMenu(): Promise<number> {
   console.log('1) Registrar evaluaciones de un estudiante');
   console.log('2) Registrar asistencia mínima de un estudiante');
   console.log('3) Registrar acuerdo docente para puntos extra (por año académico)');
+  console.log('4) Calcular nota final de un estudiante');
   console.log('0) Salir');
   return askNumber('Seleccione una opción: ');
 }
@@ -65,4 +66,14 @@ export async function promptAcademicYear(): Promise<string> {
     throw new Error('El año académico es obligatorio');
   }
   return year;
+}
+
+export async function promptExtraPoints(): Promise<number> {
+  const ans = (await rl.question('Puntos extra a aplicar si la política lo permite (ej. 1): ')).trim();
+  if (ans === '') return 0;
+  const value = Number(ans);
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error('Debe ingresar un número mayor o igual a 0');
+  }
+  return value;
 }
