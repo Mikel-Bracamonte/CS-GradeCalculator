@@ -83,9 +83,14 @@ async function main() {
             console.log('\n== Resultado de nota final ==');
             console.log(`Asistencia mínima: ${result.attendanceOk ? 'Cumple' : 'No cumple'}`);
             console.log(`Nota base (ponderada): ${result.baseScore.toFixed(2)}`);
-            console.log(
-              `Puntos extra aplicados: ${result.appliedExtraPolicy ? result.extraPointsApplied : 0}`
-            );
+            if (!result.attendanceOk) {
+              console.log(`Penalización por inasistencia: -${result.penaltyApplied.toFixed(2)} (nota final 0)`);
+            } else {
+              console.log(`Penalización por inasistencia: 0`);
+              console.log(
+                `Puntos extra aplicados: ${result.appliedExtraPolicy ? result.extraPointsApplied : 0}`
+              );
+            }
             console.log(`Nota final: ${result.finalScore.toFixed(2)}`);
           } catch (err) {
             console.error('Error:', (err as Error).message);

@@ -38,6 +38,7 @@ describe('CalculateFinalGrade use case', () => {
 
     expect(result.finalScore).toBe(16);
     expect(result.appliedExtraPolicy).toBe(true);
+    expect(result.penaltyApplied).toBe(0);
   });
 
   it('throws if student not found', async () => {

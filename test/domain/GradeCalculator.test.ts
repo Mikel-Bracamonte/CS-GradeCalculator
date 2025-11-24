@@ -11,6 +11,7 @@ describe('GradeCalculator', () => {
     const result = calculator.calculate(student, null, 1);
     expect(result.finalScore).toBe(0);
     expect(result.attendanceOk).toBe(false);
+    expect(result.penaltyApplied).toBe(15);
   });
 
   it('applies extra points when policy allows', () => {
@@ -20,6 +21,7 @@ describe('GradeCalculator', () => {
     expect(result.baseScore).toBe(15);
     expect(result.extraPointsApplied).toBe(1);
     expect(result.finalScore).toBe(16);
+    expect(result.penaltyApplied).toBe(0);
   });
 
   it('caps final score at 20', () => {

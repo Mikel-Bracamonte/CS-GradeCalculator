@@ -3,6 +3,7 @@ import { TeacherAgreement } from '../model/TeacherAgreement';
 
 export type GradeCalculationResult = {
   baseScore: number;
+  penaltyApplied: number;
   extraPointsApplied: number;
   finalScore: number;
   attendanceOk: boolean;
@@ -23,6 +24,7 @@ export class GradeCalculator {
     if (!attendanceOk) {
       return {
         baseScore,
+        penaltyApplied: baseScore,
         extraPointsApplied: 0,
         finalScore: 0,
         attendanceOk,
@@ -36,6 +38,7 @@ export class GradeCalculator {
 
     return {
       baseScore,
+      penaltyApplied: 0,
       extraPointsApplied: extra,
       finalScore,
       attendanceOk,
