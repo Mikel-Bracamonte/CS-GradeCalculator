@@ -48,4 +48,17 @@ describe('CalculateFinalGrade use case', () => {
 
     await expect(useCase.execute('missing', '2025-1', 1)).rejects.toThrow('Estudiante no encontrado');
   });
+
+  it('completes under 300ms per request', async () => {
+    const studentRepo = new FakeStudentRepo();
+    const policyRepo = new FakePolicyRepo();
+    await studentRepo.save(new Student('s1', [new Evaluation(15, 100)], true));
+    await policyRepo.saveTeacherAgreement(new TeacherAgreement('2025-1', true));
+    const useCase = new CalculateFinalGrade(studentRepo, policyRepo, new GradeCalculator());
+
+    const start = Date.now();
+    await useCase.execute('s1', '2025-1', 1);
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(300);
+  });
 });

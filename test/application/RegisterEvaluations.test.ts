@@ -55,4 +55,12 @@ describe('RegisterEvaluations use case', () => {
       ])
     ).rejects.toThrow('Total weight must be greater than 0 and at most 100');
   });
+
+  it('rejects more than 10 evaluations', async () => {
+    const repo = new FakeStudentRepo();
+    const useCase = new RegisterEvaluations(repo);
+    const many = Array.from({ length: 11 }, () => ({ score: 10, weight: 10 }));
+
+    await expect(useCase.execute('stu-4', many)).rejects.toThrow('Máximo 10 evaluaciones');
+  });
 });

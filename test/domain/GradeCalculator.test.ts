@@ -30,4 +30,12 @@ describe('GradeCalculator', () => {
     const result = calculator.calculate(student, agreement, 5);
     expect(result.finalScore).toBe(20);
   });
+
+  it('is deterministic for same inputs', () => {
+    const student = new Student('s1', [new Evaluation(14, 50), new Evaluation(16, 50)], true);
+    const agreement = new TeacherAgreement('2025-1', true);
+    const r1 = calculator.calculate(student, agreement, 1);
+    const r2 = calculator.calculate(student, agreement, 1);
+    expect(r1).toEqual(r2);
+  });
 });

@@ -9,6 +9,9 @@ export class RegisterEvaluations {
   constructor(private readonly repo: StudentRepository) {}
 
   async execute(studentId: string, examsStudents: ExamInput[]): Promise<void> {
+    if (examsStudents.length > 10) {
+      throw new Error('Máximo 10 evaluaciones por estudiante');
+    }
     const evals = examsStudents.map(e => new Evaluation(e.score, e.weight));
     const totalWeight = evals.reduce((acc, e) => acc + e.weight, 0);
     if (totalWeight <= 0 || totalWeight > 100) {
