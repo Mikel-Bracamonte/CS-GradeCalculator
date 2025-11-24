@@ -1,11 +1,15 @@
 import { RegisterEvaluations } from '../../application/usecase/RegisterEvaluations';
 import { RegisterAttendance } from '../../application/usecase/RegisterAttendance';
+import { RegisterTeacherAgreement } from '../../application/usecase/RegisterTeacherAgreement';
 import { InMemoryStudentRepository } from '../persistence/InMemoryStudentRepository';
+import { InMemoryPolicyRepository } from '../persistence/InMemoryPolicyRepository';
 import {
   closePrompts,
   promptAttendance,
+  promptAcademicYear,
   promptEvaluations,
   promptMenu,
+  promptYesNo,
   promptStudentId,
 } from './prompts/promptEvaluations';
 
@@ -29,8 +33,10 @@ async function handleRegisterEvaluations(
 
 async function main() {
   const repo = new InMemoryStudentRepository();
+  const policyRepo = new InMemoryPolicyRepository();
   const registerEvaluations = new RegisterEvaluations(repo);
   const registerAttendance = new RegisterAttendance(repo);
+  const registerTeacherAgreement = new RegisterTeacherAgreement(policyRepo);
 
   try {
     let exit = false;
@@ -50,6 +56,16 @@ async function main() {
             const attended = await promptAttendance();
             await registerAttendance.execute(studentId, attended);
             console.log('Asistencia registrada correctamente.');
+          } catch (err) {
+            console.error('Error:', (err as Error).message);
+          }
+          break;
+        case 3:
+          try {
+            const academicYear = await promptAcademicYear();
+            const agree = await promptYesNo('¿Todos los docentes están de acuerdo? (s/n): ');
+            await registerTeacherAgreement.execute(academicYear, agree);
+            console.log('Acuerdo docente registrado.');
           } catch (err) {
             console.error('Error:', (err as Error).message);
           }

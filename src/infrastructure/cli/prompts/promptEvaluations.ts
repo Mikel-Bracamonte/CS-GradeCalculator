@@ -17,6 +17,7 @@ export async function promptMenu(): Promise<number> {
   console.log('\n=== Menú principal ===');
   console.log('1) Registrar evaluaciones de un estudiante');
   console.log('2) Registrar asistencia mínima de un estudiante');
+  console.log('3) Registrar acuerdo docente para puntos extra (por año académico)');
   console.log('0) Salir');
   return askNumber('Seleccione una opción: ');
 }
@@ -47,9 +48,21 @@ export async function closePrompts(): Promise<void> {
   await rl.close();
 }
 
-export async function promptAttendance(): Promise<boolean> {
-  const ans = (await rl.question('¿Cumplió asistencia mínima? (s/n): ')).trim().toLowerCase();
+export async function promptYesNo(question: string): Promise<boolean> {
+  const ans = (await rl.question(question)).trim().toLowerCase();
   if (ans === 's' || ans === 'si' || ans === 'sí') return true;
   if (ans === 'n' || ans === 'no') return false;
   throw new Error('Respuesta inválida, use s/n');
+}
+
+export async function promptAttendance(): Promise<boolean> {
+  return promptYesNo('¿Cumplió asistencia mínima? (s/n): ');
+}
+
+export async function promptAcademicYear(): Promise<string> {
+  const year = (await rl.question('Año académico (ej. 2025-1): ')).trim();
+  if (!year) {
+    throw new Error('El año académico es obligatorio');
+  }
+  return year;
 }
