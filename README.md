@@ -21,3 +21,13 @@ Sigue el menú interactivo para registrar datos y calcular la nota final.
 npm test
 ```
 Genera `coverage/lcov.info` para Sonar y muestra el resumen en consola.
+
+
+
+## Resultados de calidad y análisis SonarQube
+
+### Requerido
+![Calidad requerida](sonnar.png)
+
+### Resultado del alumno en SonarQube
+![Resultado SonarQube](quality.png)
